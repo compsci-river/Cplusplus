@@ -1,3 +1,6 @@
+//River Sheppard
+//Description:
+
 #include <stdlib.h>
 #include <iostream>
 #include <string>
@@ -64,6 +67,7 @@ string hoursToStr(int hours)
 	if (hours == 1) s = to_string(hours) + "  hour ";
 	else if (hours < 10) s = to_string(hours) + "  hours";
 	else s = to_string(hours) + " hours";
+	s = " " + s;
 	return s;
 }
 
@@ -162,7 +166,7 @@ int main()
 				pre = current;
 				if (current != NULL) current = current->next;
 			}
-			cout << "deleted" << endl;
+			cout << "Deleted assignment " << n << "." << endl;
 		}
 		else if (choice == 3)
 		{
@@ -182,7 +186,7 @@ int main()
 				{
 					st[11+i] = na[i];
 				}
-				for (i = 0; i < 8; i++)
+				for (i = 0; i < 9; i++)
 				{
 					st[31+i] = ho[i];
 				}
