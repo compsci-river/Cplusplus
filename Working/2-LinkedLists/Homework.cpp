@@ -1,5 +1,6 @@
 //River Sheppard
-//Description:
+//Description: Creates a planner for homework. Has nodes which include the name, due date and expected time for the assignment. The planner gives four options,
+//add an assignment, delete an assignment, print out the assigment list, and quit the program. The assignments are stored in a linked list.
 
 #include <stdlib.h>
 #include <iostream>
@@ -7,6 +8,7 @@
 #include <sstream>
 using namespace std;
 
+//node component of the linked list
 struct node
 {
 	node * next;
@@ -17,24 +19,42 @@ struct node
 	int dateVal;
 };
 
+//creates a new assignment node 
 node * newNode()
 {
 	string mystr;
 	string n;
-	int m;
-	int d;
+	int m = 0;
+	int d = 0;
 	double h;
+	int mVal[12] = {31,29,31,30,31,30,31,31,30,31,30,31};
 	
 	cout << "What is the name of this assignment? ";
 	getline (cin,mystr);
 	stringstream(mystr) >> n;
 	cout << "  Due date information:" << endl;
-	cout << "    What month is it due? ";
-	getline (cin,mystr);
-	stringstream(mystr) >> m;
-	cout << "    What day is it due? ";
-	getline (cin,mystr);
-	stringstream(mystr) >> d;
+	//makes sure the entered month is valid
+	while (m < 1 or m > 12)
+	{
+		cout << "    What month is it due? ";
+		getline (cin,mystr);
+		stringstream(mystr) >> m;
+		if (m < 1 or m > 12)
+		{
+			cout << "    That is not a valid month please try again?" << endl;
+		}
+	}
+	//makes sure the entered day is valid
+	while (d < 1 or d > mVal[m-1])
+	{
+		cout << "    What day is it due? ";
+		getline (cin,mystr);
+		stringstream(mystr) >> d;
+		if (d < 1 or d > mVal[m-1])
+		{
+			cout << "    That is not a valid day please try again?" << endl;
+		}
+	}
 	cout << "How many hours will it take you to complete? ";
 	getline (cin,mystr);
 	stringstream(mystr) >> h;
@@ -49,6 +69,7 @@ node * newNode()
 	return nodeA;
 }
 
+//converts the month and day to a combined string
 string dateToStr(int month,int day)
 {
 	string m;
@@ -61,6 +82,7 @@ string dateToStr(int month,int day)
 	return s;
 }
 
+//converts the hours component to a string
 string hoursToStr(int hours)
 {
 	string s;
@@ -71,8 +93,7 @@ string hoursToStr(int hours)
 	return s;
 }
 
-
-
+//main function - controls the planner
 int main()
 {
 	bool running = true;
@@ -88,7 +109,7 @@ int main()
 		}
 		int choice = 0;
 		string mystr;
-		
+		//gets the main choice of what the planner should do
 		cout << "Enter the number for your choice:" << endl;
 		cout << "  1. Enter a new assignment" << endl;
 		cout << "  2. Delete an assignment" << endl;
@@ -97,6 +118,7 @@ int main()
 		getline (cin,mystr);
 		stringstream(mystr) >> choice;
 		
+		//add an assigment
 		if (choice == 1)
 		{
 			node * nodeA = newNode();
@@ -134,6 +156,7 @@ int main()
 				}
 			}
 		}
+		//delete an assigment
 		else if (choice == 2)
 		{
 			string n;
@@ -168,6 +191,7 @@ int main()
 			}
 			cout << "Deleted assignment " << n << "." << endl;
 		}
+		//print assignments
 		else if (choice == 3)
 		{
 			node * current = first;
@@ -194,6 +218,7 @@ int main()
 				current = current->next;
 			}
 		}
+		//quit program
 		else if (choice == 4)
 		{
 			running = false;
