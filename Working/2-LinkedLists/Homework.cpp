@@ -93,20 +93,140 @@ string hoursToStr(int hours)
 	return s;
 }
 
+//add an assigment
+node * addNode(node * first)
+{
+	node * nodeA = newNode();
+	if (first == NULL) 
+	{
+		first = nodeA;
+	}
+	else if (first->dateVal >= nodeA->dateVal)
+	{
+		nodeA->next = first;
+		first = nodeA;
+	}
+	else
+	{
+		bool check = true;
+		
+		node * current = first;
+		node * pre;
+		while (current != NULL)
+		{
+			if (check and current->dateVal >= nodeA->dateVal)
+			{
+				nodeA->next = current;
+				pre->next = nodeA;
+				check = false;
+			}
+			pre = current;
+			current = current->next;
+		}
+		
+		if (check)
+		{
+			pre->next = nodeA;
+		}
+	}
+	return first;
+}
+
+//delete an assigment
+node * delNode(node * first)
+{
+	string n;
+	string mystr;
+			
+	cout << "What is the name of the assignment you would like to delete? ";
+	getline (cin,mystr);
+	stringstream(mystr) >> n;
+	
+	bool check = true;
+	bool started = false;
+	
+	node * current = first;
+	node * pre;
+	while (current != NULL)
+	{
+		if (check and current->name == n)
+		{
+			if (started)
+			{
+				pre->next = current->next;
+			}
+			else
+			{
+				first = current->next;
+			}
+			delete current;
+			check = false;
+		}
+		if(!started) started = true;
+		pre = current;
+		if (current != NULL) current = current->next;
+	}
+	if (check)
+	{
+		cout << "No assignment of name " << n << " to delete." << endl;
+	}
+	else
+	{
+		cout << "Deleted assignment " << n << "." << endl;
+	}
+	return first;
+}
+
+//print assignments
+void printOut(node * first)
+{
+	node * current = first;
+	while (current != NULL)
+	{
+		int i;
+		string da = dateToStr(current->month,current->day);
+		string na = current->name;
+		string ho = hoursToStr(current->hours);
+		string st = "Due:                                                             ";
+		for (i = 0; i < 5; i++)
+		{
+			st[4+i] = da[i];
+		}
+		for (i = 0; i < na.length(); i++)
+		{
+			st[11+i] = na[i];
+		}
+		for (i = 0; i < 9; i++)
+		{
+			st[31+i] = ho[i];
+		}
+		cout << st << endl;
+		current = current->next;
+	}
+}
+
+node * quit(node * first)
+{
+	node * current = first;
+	node * hold;
+	while (current != NULL)
+	{
+		hold = current;
+		current = current->next;
+		delete hold;
+	}
+	return first;
+}
+
 //main function - controls the planner
 int main()
 {
 	bool running = true;
 	
 	node * first = NULL;
-	bool start = true;
 	
 	while (running)
 	{
-		if (first == NULL)
-		{
-			start = true;
-		}
 		int choice = 0;
 		string mystr;
 		//gets the main choice of what the planner should do
@@ -118,109 +238,22 @@ int main()
 		getline (cin,mystr);
 		stringstream(mystr) >> choice;
 		
-		//add an assigment
 		if (choice == 1)
 		{
-			node * nodeA = newNode();
-			if (start) 
-			{
-				first = nodeA;
-				start = false;
-			}
-			else if (first->dateVal >= nodeA->dateVal)
-			{
-				nodeA->next = first;
-				first = nodeA;
-			}
-			else
-			{
-				bool check = true;
-				
-				node * current = first;
-				node * pre;
-				while (current != NULL)
-				{
-					if (check and current->dateVal >= nodeA->dateVal)
-					{
-						nodeA->next = current;
-						pre->next = nodeA;
-						check = false;
-					}
-					pre = current;
-					current = current->next;
-				}
-				
-				if (check)
-				{
-					pre->next = nodeA;
-				}
-			}
+			first = addNode(first);
 		}
-		//delete an assigment
 		else if (choice == 2)
 		{
-			string n;
-			
-			cout << "What is the name of the assignment you would like to delete? ";
-			getline (cin,mystr);
-			stringstream(mystr) >> n;
-			
-			bool check = true;
-			bool started = false;
-			
-			node * current = first;
-			node * pre;
-			while (current != NULL)
-			{
-				if (check and current->name == n)
-				{
-					if (started)
-					{
-						pre->next = current->next;
-					}
-					else
-					{
-						first = current->next;
-					}
-					delete current;
-					check = false;
-				}
-				if(!started) started = true;
-				pre = current;
-				if (current != NULL) current = current->next;
-			}
-			cout << "Deleted assignment " << n << "." << endl;
+			first = delNode(first);
 		}
-		//print assignments
 		else if (choice == 3)
 		{
-			node * current = first;
-			while (current != NULL)
-			{
-				int i;
-				string da = dateToStr(current->month,current->day);
-				string na = current->name;
-				string ho = hoursToStr(current->hours);
-				string st = "Due:                                                             ";
-				for (i = 0; i < 5; i++)
-				{
-					st[4+i] = da[i];
-				}
-				for (i = 0; i < na.length(); i++)
-				{
-					st[11+i] = na[i];
-				}
-				for (i = 0; i < 9; i++)
-				{
-					st[31+i] = ho[i];
-				}
-				cout << st << endl;
-				current = current->next;
-			}
+			printOut(first);
 		}
 		//quit program
 		else if (choice == 4)
 		{
+			first = quit(first);
 			running = false;
 		}
 	}
